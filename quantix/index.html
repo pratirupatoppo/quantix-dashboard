@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantix — Data Analytics Platform</title>
+  <meta name="description" content="Quantix: Interactive analytics dashboards for India E-Commerce Sales and Telecom Customer Churn analysis." />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════ SIDEBAR ═══════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon">Q</div>
+      <span class="logo-text">Quantix</span>
+    </div>
+
+    <div class="sidebar-section-label">Main</div>
+    <nav>
+      <button class="nav-link active" data-page="home" onclick="showPage('home')">
+        <span class="nav-icon">⬡</span>
+        <span>Home</span>
+      </button>
+      <button class="nav-link" data-page="ecommerce" onclick="showPage('ecommerce'); initEcomDashboard();">
+        <span class="nav-icon">🛒</span>
+        <span>E-Commerce</span>
+        <span class="nav-badge">NEW</span>
+      </button>
+      <button class="nav-link" data-page="churn" onclick="showPage('churn'); initChurnDashboard();">
+        <span class="nav-icon">📡</span>
+        <span>Churn Dashboard</span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- ═══════════════════════════════ MAIN ═══════════════════════════════════ -->
+  <main class="main-content">
+
+    <!-- ────────────────────── PAGE: HOME ────────────────────────── -->
+    <div id="page-home" class="page active">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">For you</h1>
+          <p class="page-subtitle">Your analytics workspace • India Data Projects</p>
+        </div>
+      </div>
+
+      <!-- Hero Cards -->
+      <div class="hero-grid fade-in">
+        <div class="hero-card hero-card-yellow" onclick="showPage('ecommerce'); initEcomDashboard();">
+          <div>
+            <div class="hero-card-meta">12 charts</div>
+            <h2>India E-Commerce<br>Analytics</h2>
+            <button class="hero-card-btn">Explore Dashboard →</button>
+          </div>
+          <div class="hero-card-illustration">📊</div>
+        </div>
+        <div class="hero-card hero-card-orange" onclick="showPage('churn'); initChurnDashboard();">
+          <div>
+            <div class="hero-card-meta">10 charts</div>
+            <h2>E-Commerce Churn<br>Analysis</h2>
+            <button class="hero-card-btn" style="background:#fff;color:#000;">View Report →</button>
+          </div>
+          <div class="hero-card-illustration">📡</div>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="section-header">
+        <span class="section-title">Quick Stats</span>
+        <span class="section-link" onclick="showPage('ecommerce'); initEcomDashboard();">View all →</span>
+      </div>
+      <div class="kpi-grid fade-in">
+        <div class="kpi-card accent-yellow">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Total Revenue</div>
+          <div class="kpi-value">₹24.4L</div>
+          <div class="kpi-sub"><span class="badge-up">↑ 18.4%</span> vs last year</div>
+        </div>
+        <div class="kpi-card accent-orange">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Total Orders</div>
+          <div class="kpi-value">38,765</div>
+          <div class="kpi-sub"><span class="badge-up">↑ 12.1%</span> growth</div>
+        </div>
+        <div class="kpi-card accent-pink">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Churn Rate</div>
+          <div class="kpi-value">14.2%</div>
+          <div class="kpi-sub"><span class="badge-down">↑ 1.3%</span> needs action</div>
+        </div>
+        <div class="kpi-card accent-cyan">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Model Accuracy</div>
+          <div class="kpi-value">89.3%</div>
+          <div class="kpi-sub"><span class="badge-up">↑ 4.2%</span> RF model</div>
+        </div>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="section-header" style="margin-top:8px">
+        <span class="section-title">Highlights</span>
+      </div>
+      <div class="feature-grid fade-in">
+        <div class="feature-card fc-yellow" onclick="showPage('ecommerce'); initEcomDashboard();">
+          <div class="feature-card-icon">🏆</div>
+          <div class="feature-card-label">Top State</div>
+          <div class="feature-card-value" id="home-hl-state">-</div>
+        </div>
+        <div class="feature-card fc-orange" onclick="showPage('ecommerce'); initEcomDashboard();">
+          <div class="feature-card-icon">📦</div>
+          <div class="feature-card-label">Best Category</div>
+          <div class="feature-card-value" id="home-hl-category">-</div>
+        </div>
+        <div class="feature-card fc-pink" onclick="showPage('churn'); initChurnDashboard();">
+          <div class="feature-card-icon">⚠️</div>
+          <div class="feature-card-label">High Risk Segment</div>
+          <div class="feature-card-value" id="home-hl-segment">-</div>
+        </div>
+        <div class="feature-card fc-cyan" onclick="showPage('ecommerce'); initEcomDashboard();">
+          <div class="feature-card-icon">💰</div>
+          <div class="feature-card-label">Profit Margin</div>
+          <div class="feature-card-value" id="home-hl-margin">-</div>
+        </div>
+      </div>
+    </div><!-- /page-home -->
+
+    <!-- ─────────────────── PAGE: E-COMMERCE ─────────────────────── -->
+    <div id="page-ecommerce" class="page">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">E-Commerce Analytics</h1>
+          <p class="page-subtitle">India Sales Dashboard • Interactive Multi-Year Analysis</p>
+        </div>
+        <div class="page-header-right">
+          <select id="yearFilter" class="btn btn-outline" onchange="switchYear(this.value)" style="background:var(--bg); color:var(--text-w); border-color:var(--border-strong); appearance:none; padding-right:30px;">
+            <option value="2025-2026">📅 FY 2025-2026</option>
+            <option value="2024-2025">📅 FY 2024-2025</option>
+            <option value="2023-2024">📅 FY 2023-2024</option>
+            <option value="2022-2023">📅 FY 2022-2023</option>
+            <option value="2021-2022">📅 FY 2021-2022</option>
+            <option value="2020-2021">📅 FY 2020-2021</option>
+            <option value="2019-2020">📅 FY 2019-2020</option>
+            <option value="2018-2019" selected>📅 FY 2018-2019</option>
+          </select>
+          <button class="btn btn-outline" onclick="showPage('home')">← Back</button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid fade-in">
+        <div class="kpi-card accent-yellow">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Total Revenue</div>
+          <div class="kpi-value" id="ec-kpi-revenue">₹0</div>
+          <div class="kpi-sub"><span class="badge-up"></span> YoY</div>
+        </div>
+        <div class="kpi-card accent-orange">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Total Orders</div>
+          <div class="kpi-value" id="ec-kpi-orders">0</div>
+          <div class="kpi-sub">Across 3 categories</div>
+        </div>
+        <div class="kpi-card accent-cyan">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Avg Order Value</div>
+          <div class="kpi-value" id="ec-kpi-aov">₹0</div>
+          <div class="kpi-sub">Per transaction</div>
+        </div>
+        <div class="kpi-card accent-green">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Total Profit</div>
+          <div class="kpi-value" id="ec-kpi-profit">₹0</div>
+          <div class="kpi-sub"><span class="badge-up">12.8%</span> margin</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar fade-in">
+        <span class="filter-label">Category:</span>
+        <button class="pill ec-filter-pill active" onclick="filterEcom('All',this)">All Categories</button>
+        <button class="pill ec-filter-pill" onclick="filterEcom('Furniture',this)">Furniture</button>
+        <button class="pill ec-filter-pill" onclick="filterEcom('Electronics',this)">Electronics</button>
+        <button class="pill ec-filter-pill" onclick="filterEcom('Clothing',this)">Clothing</button>
+      </div>
+
+      <!-- Row 1: Line + Bar -->
+      <div class="charts-row charts-row-auto fade-in">
+        <div class="chart-card">
+          <div class="chart-card-title">Monthly Revenue Trend</div>
+          <div class="chart-card-sub">Revenue & Profit over the selected year</div>
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="chart-revenue"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Revenue by State</div>
+          <div class="chart-card-sub">Top 12 states by total sales</div>
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="chart-states"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 2: Donut + Grouped Bar -->
+      <div class="charts-row charts-row-2 fade-in">
+        <div class="chart-card">
+          <div class="chart-card-title">Category Revenue Split</div>
+          <div class="chart-card-sub">Furniture · Electronics · Clothing</div>
+          <div class="chart-wrap" style="height:240px">
+            <canvas id="chart-donut"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Sales vs Target by Category</div>
+          <div class="chart-card-sub">Actual revenue against annual targets</div>
+          <div class="chart-wrap" style="height:240px">
+            <canvas id="chart-target"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Scatter full width -->
+      <div class="charts-row charts-row-wide fade-in">
+        <div class="chart-card">
+          <div class="chart-card-title">Order Amount vs Profit</div>
+          <div class="chart-card-sub">Scatter plot — 200 sampled orders by category</div>
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="chart-scatter"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sub-category table -->
+      <div class="chart-card fade-in" style="margin-top:20px">
+        <div class="chart-card-title">Sub-Category Performance</div>
+        <div class="chart-card-sub">Revenue breakdown with profit analysis</div>
+        <table class="data-table" style="margin-top:8px">
+          <thead>
+            <tr>
+              <th>Sub-Category</th>
+              <th>Revenue</th>
+              <th style="width:30%">Share</th>
+              <th>Profit</th>
+            </tr>
+          </thead>
+          <tbody id="subcategory-tbody"></tbody>
+        </table>
+      </div>
+    </div><!-- /page-ecommerce -->
+
+    <!-- ─────────────────── PAGE: CHURN ──────────────────────────── -->
+    <div id="page-churn" class="page">
+      <div class="page-header">
+        <div class="page-header-left">
+          <h1 class="page-title">Customer Churn Analysis</h1>
+          <p class="page-subtitle">India E-Commerce • Interactive Multi-Year Analysis • Guest · Standard · Plus · Premium</p>
+        </div>
+        <div class="page-header-right">
+          <select id="churnYearFilter" class="btn btn-outline" onchange="switchChurnYear(this.value)" style="background:var(--bg); color:var(--text-w); border-color:var(--border-strong); appearance:none; padding-right:30px;">
+            <option value="2025-2026">📅 FY 2025-2026</option>
+            <option value="2024-2025">📅 FY 2024-2025</option>
+            <option value="2023-2024">📅 FY 2023-2024</option>
+            <option value="2022-2023">📅 FY 2022-2023</option>
+            <option value="2021-2022">📅 FY 2021-2022</option>
+            <option value="2020-2021">📅 FY 2020-2021</option>
+            <option value="2019-2020">📅 FY 2019-2020</option>
+            <option value="2018-2019" selected>📅 FY 2018-2019</option>
+          </select>
+          <button class="btn btn-outline" onclick="showPage('home')">← Back</button>
+        </div>
+      </div>
+
+      <!-- KPIs -->
+      <div class="kpi-grid fade-in">
+        <div class="kpi-card accent-pink">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Churn Rate</div>
+          <div class="kpi-value" id="ch-kpi-rate">0%</div>
+          <div class="kpi-sub"><span class="badge-down" id="ch-kpi-rate-badge"></span> vs last year</div>
+        </div>
+        <div class="kpi-card accent-orange">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Customers at Risk</div>
+          <div class="kpi-value" id="ch-kpi-atrisk">0</div>
+          <div class="kpi-sub">Predicted churners</div>
+        </div>
+        <div class="kpi-card accent-cyan">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Model Accuracy</div>
+          <div class="kpi-value" id="ch-kpi-accuracy">0%</div>
+          <div class="kpi-sub">Random Forest classifier</div>
+        </div>
+        <div class="kpi-card accent-yellow">
+          <div class="kpi-accent-bar"></div>
+          <div class="kpi-label">Total Customers</div>
+          <div class="kpi-value" id="ch-kpi-total">0</div>
+          <div class="kpi-sub">Across all segments</div>
+        </div>
+      </div>
+
+      <!-- Tab Bar -->
+      <div class="filter-bar fade-in">
+        <button class="pill ch-tab-btn active active-pink" data-tab="overview"    onclick="showChurnTab('overview')">Overview</button>
+        <button class="pill ch-tab-btn" data-tab="demographic" onclick="showChurnTab('demographic')">Demographics</button>
+        <button class="pill ch-tab-btn" data-tab="geographic"  onclick="showChurnTab('geographic')">Geographic</button>
+        <button class="pill ch-tab-btn" data-tab="usage"       onclick="showChurnTab('usage')">Shopping Patterns</button>
+        <button class="pill ch-tab-btn" data-tab="model"       onclick="showChurnTab('model')">Model Results</button>
+      </div>
+
+      <!-- ── TAB: OVERVIEW ── -->
+      <div id="churn-panel-overview" class="churn-tab-panel">
+        <div class="charts-row charts-row-auto fade-in">
+          <div class="chart-card">
+            <div class="chart-card-title">Churn by Customer Segment</div>
+            <div class="chart-card-sub">Churned vs Retained customers stacked</div>
+            <div class="chart-wrap" style="height:260px">
+              <canvas id="chart-provider"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Gender Distribution</div>
+            <div class="chart-card-sub">Churned & Retained by gender</div>
+            <div class="chart-wrap" style="height:260px">
+              <canvas id="chart-gender"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="chart-card fade-in" style="margin-top:20px">
+          <div class="chart-card-title">Segment Summary Table</div>
+          <div class="chart-card-sub">Detailed churn metrics per membership tier</div>
+          <table class="data-table" style="margin-top:8px">
+            <thead>
+              <tr>
+                <th>Segment</th><th>Total</th><th>Churned</th><th>Churn Rate</th><th style="width:25%">Risk Bar</th>
+              </tr>
+            </thead>
+            <tbody id="provider-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── TAB: DEMOGRAPHIC ── -->
+      <div id="churn-panel-demographic" class="churn-tab-panel" style="display:none">
+        <div class="charts-row charts-row-2 fade-in">
+          <div class="chart-card">
+            <div class="chart-card-title">Churn by Age Group</div>
+            <div class="chart-card-sub">Churned vs Retained across age buckets</div>
+            <div class="chart-wrap" style="height:260px">
+              <canvas id="chart-age"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Churn Rate by Age</div>
+            <div class="chart-card-sub">% churn trend across age groups</div>
+            <div class="chart-wrap" style="height:260px">
+              <canvas id="chart-age-rate"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: GEOGRAPHIC ── -->
+      <div id="churn-panel-geographic" class="churn-tab-panel" style="display:none">
+        <div class="chart-card fade-in">
+          <div class="chart-card-title">State-wise Churn Rate Heatmap</div>
+          <div class="chart-card-sub">Cyan = low risk · Orange = medium · Pink = high risk</div>
+          <div id="geo-heatmap" class="heatmap-grid"></div>
+        </div>
+        <div class="chart-card fade-in" style="margin-top:20px">
+          <div class="chart-card-title">Churn Rate by State</div>
+          <div class="chart-card-sub">Ranked from highest to lowest churn</div>
+          <div class="chart-wrap" style="height:360px">
+            <canvas id="chart-state-churn"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: USAGE ── -->
+      <div id="churn-panel-usage" class="churn-tab-panel" style="display:none">
+        <div class="charts-row charts-row-2 fade-in">
+          <div class="chart-card">
+            <div class="chart-card-title">Shopping: Churned vs Retained</div>
+            <div class="chart-card-sub">Orders, Items & Spend comparison</div>
+            <div class="chart-wrap" style="height:280px">
+              <canvas id="chart-usage"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Retained-to-Churned Ratio</div>
+            <div class="chart-card-sub">How many times more retained customers use each service</div>
+            <div class="chart-wrap" style="height:280px">
+              <canvas id="chart-usage-ratio"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: MODEL ── -->
+      <div id="churn-panel-model" class="churn-tab-panel" style="display:none">
+        <div class="charts-row charts-row-auto fade-in">
+          <div class="chart-card">
+            <div class="chart-card-title">Feature Importance</div>
+            <div class="chart-card-sub">Top predictors from Random Forest model</div>
+            <div class="chart-wrap" style="height:300px">
+              <canvas id="chart-feature"></canvas>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Confusion Matrix</div>
+            <div class="chart-card-sub">Model predictions on test set</div>
+            <div id="confusion-matrix" class="confusion-matrix"></div>
+            <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-s)">
+              Precision: <strong style="color:var(--green)">87.7%</strong> &nbsp;|&nbsp; 
+              Recall: <strong style="color:var(--cyan)">89.0%</strong> &nbsp;|&nbsp; 
+              F1: <strong style="color:var(--yellow)">88.3%</strong>
+            </div>
+          </div>
+        </div>
+        <div class="chart-card fade-in" style="margin-top:20px">
+          <div class="chart-card-title">ROC Curve</div>
+          <div class="chart-card-sub">Receiver Operating Characteristic — AUC = 0.93</div>
+          <div class="chart-wrap" style="height:280px">
+            <canvas id="chart-roc"></canvas>
+          </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div style="margin-top:28px">
+          <div class="section-header">
+            <span class="section-title">📋 Business Recommendations</span>
+          </div>
+          <div class="rec-grid fade-in" id="rec-grid"></div>
+        </div>
+      </div>
+
+    </div><!-- /page-churn -->
+
+  </main>
+
+<!-- ── Scripts ── -->
+<script src="data/ecommerce_data.js"></script>
+<script src="data/churn_data.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/ecommerce.js"></script>
+<script src="js/churn.js"></script>
+<script>
+  // Boot
+  document.addEventListener('DOMContentLoaded', () => {
+    observeFadeIn();
+
+    // --- Update Home Page Highlights for Current Year (2025-2026) ---
+    const currentFY = '2025-2026';
+    const eData = ECOMMERCE_DATA[currentFY];
+    const cData = CHURN_DATA[currentFY];
+
+    if (eData && cData) {
+      // 1. Calculate Top State
+      const topState = eData.stateRevenue.reduce((max, s) => s.revenue > max.revenue ? s : max, eData.stateRevenue[0]);
+      document.getElementById('home-hl-state').textContent = topState.state;
+
+      // 2. Calculate Best Category
+      const topCat = eData.categoryData.reduce((max, c) => c.revenue > max.revenue ? c : max, eData.categoryData[0]);
+      document.getElementById('home-hl-category').textContent = topCat.category;
+
+      // 3. Find Highest Risk Segment (Highest Churn Rate)
+      const highRisk = cData.churnByProvider.reduce((max, p) => p.churnRate > max.churnRate ? p : max, cData.churnByProvider[0]);
+      document.getElementById('home-hl-segment').textContent = highRisk.provider;
+
+      // 4. Calculate Overall Profit Margin
+      const margin = ((eData.kpis.totalProfit / eData.kpis.totalRevenue) * 100).toFixed(1);
+      document.getElementById('home-hl-margin').textContent = margin + '%';
+    }
+
+    // Build recommendations on churn page
+    const recGrid = document.getElementById('rec-grid');
+    if (recGrid) {
+      // We grab the recommendations from the latest year so they stay relevant
+      recGrid.innerHTML = CHURN_DATA['2025-2026'].recommendations.map(r => `
+        <div class="rec-card fade-in">
+          <div class="rec-icon">${r.icon}</div>
+          <div class="rec-title">${r.title}</div>
+          <div class="rec-desc">${r.desc}</div>
+        </div>`).join('');
+    }
+  });
+</script>
+</body>
+</html>
