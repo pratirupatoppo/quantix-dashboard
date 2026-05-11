@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quantix — Sign In</title>
+  <meta name="description" content="Sign in to Quantix, your premium data analytics platform for India E-Commerce and Customer Churn insights." />
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════ ANIMATED BACKGROUND ═══════════════════ -->
+  <div class="login-bg">
+    <div class="orb-3"></div>
+    <div class="grid-dots"></div>
+  </div>
+
+  <!-- ═══════════════════ LOGIN CONTAINER ═══════════════════════ -->
+  <div class="login-container">
+
+    <!-- Brand -->
+    <div class="login-brand">
+      <div class="brand-icon">Q</div>
+      <h1>Welcome to Quantix</h1>
+      <p>Your premium data analytics workspace</p>
+    </div>
+
+    <!-- Glass Card -->
+    <div class="login-card">
+
+      <!-- Tab Switcher -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+        <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Create Account</button>
+      </div>
+
+      <!-- Status Message -->
+      <div class="auth-message" id="auth-message">
+        <span id="auth-message-icon"></span>
+        <span id="auth-message-text"></span>
+      </div>
+
+      <!-- ──────────── LOGIN FORM ──────────── -->
+      <form class="auth-form active" id="form-login" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label for="login-email">Email Address</label>
+          <div class="input-wrapper">
+            <span class="input-icon">✉</span>
+            <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="login-password" placeholder="Enter your password" required autocomplete="current-password" minlength="6" />
+            <button type="button" class="pw-toggle" onclick="togglePassword('login-password', this)">👁</button>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label>
+            <input type="checkbox" id="remember-me" />
+            <span>Remember me</span>
+          </label>
+          <a href="#" onclick="event.preventDefault();">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="auth-submit" id="login-btn">
+          <span class="btn-text">Sign In →</span>
+          <div class="spinner"></div>
+        </button>
+
+        <div class="auth-divider">
+          <span>or continue with</span>
+        </div>
+
+        <div class="social-login">
+          <button type="button" class="social-btn" onclick="showMessage('Social login coming soon!', 'error')">
+            <span class="social-icon">G</span>
+            <span>Google</span>
+          </button>
+          <button type="button" class="social-btn" onclick="showMessage('Social login coming soon!', 'error')">
+            <span class="social-icon">⬡</span>
+            <span>GitHub</span>
+          </button>
+        </div>
+      </form>
+
+      <!-- ──────────── REGISTER FORM ──────────── -->
+      <form class="auth-form" id="form-register" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label for="reg-username">Username</label>
+          <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input type="text" id="reg-username" placeholder="Choose a username" required minlength="3" maxlength="20" autocomplete="username" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-email">Email Address</label>
+          <div class="input-wrapper">
+            <span class="input-icon">✉</span>
+            <input type="email" id="reg-email" placeholder="you@example.com" required autocomplete="email" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-password">Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔒</span>
+            <input type="password" id="reg-password" placeholder="Min 6 characters" required minlength="6" autocomplete="new-password" oninput="updatePasswordStrength(this.value)" />
+            <button type="button" class="pw-toggle" onclick="togglePassword('reg-password', this)">👁</button>
+          </div>
+          <div class="pw-strength" id="pw-strength">
+            <div class="pw-strength-bar" id="pw-bar-1"></div>
+            <div class="pw-strength-bar" id="pw-bar-2"></div>
+            <div class="pw-strength-bar" id="pw-bar-3"></div>
+            <div class="pw-strength-bar" id="pw-bar-4"></div>
+          </div>
+          <div class="pw-strength-label" id="pw-strength-label"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="reg-confirm">Confirm Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon">🔑</span>
+            <input type="password" id="reg-confirm" placeholder="Re-enter password" required minlength="6" autocomplete="new-password" />
+          </div>
+        </div>
+
+        <button type="submit" class="auth-submit" id="register-btn">
+          <span class="btn-text">Create Account →</span>
+          <div class="spinner"></div>
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="login-footer">
+      <p>By continuing, you agree to our <a href="#">Terms</a> & <a href="#">Privacy Policy</a></p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ SCRIPTS ═══════════════════════════ -->
+  <script src="js/auth.js"></script>
+  <script>
+    // ── Redirect if already logged in ──────────────────────────
+    if (AuthDB.isLoggedIn()) {
+      window.location.href = 'index.html';
+    }
+
+    // ── Tab switching ──────────────────────────────────────────
+    function switchAuthTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.getElementById('form-' + tab).classList.add('active');
+
+      hideMessage();
+    }
+
+    // ── Message display ────────────────────────────────────────
+    function showMessage(text, type = 'error') {
+      const el = document.getElementById('auth-message');
+      const icon = document.getElementById('auth-message-icon');
+      const txt = document.getElementById('auth-message-text');
+
+      el.className = 'auth-message show ' + type;
+      icon.textContent = type === 'error' ? '⚠' : '✓';
+      txt.textContent = text;
+    }
+
+    function hideMessage() {
+      document.getElementById('auth-message').className = 'auth-message';
+    }
+
+    // ── Password visibility toggle ─────────────────────────────
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🔒';
+      } else {
+        input.type = 'password';
+        btn.textContent = '👁';
+      }
+    }
+
+    // ── Password strength meter ────────────────────────────────
+    function updatePasswordStrength(pw) {
+      const bars = [
+        document.getElementById('pw-bar-1'),
+        document.getElementById('pw-bar-2'),
+        document.getElementById('pw-bar-3'),
+        document.getElementById('pw-bar-4')
+      ];
+      const label = document.getElementById('pw-strength-label');
+
+      // Reset
+      bars.forEach(b => b.className = 'pw-strength-bar');
+      label.className = 'pw-strength-label';
+      label.textContent = '';
+
+      if (!pw) return;
+
+      let score = 0;
+      if (pw.length >= 6) score++;
+      if (pw.length >= 10) score++;
+      if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+      if (/[0-9]/.test(pw)) score++;
+      if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+      let strength, cls;
+      if (score <= 1)      { strength = 'Weak'; cls = 'weak'; }
+      else if (score <= 3) { strength = 'Medium'; cls = 'medium'; }
+      else                 { strength = 'Strong'; cls = 'strong'; }
+
+      const fill = score <= 1 ? 1 : score <= 3 ? 3 : 4;
+      for (let i = 0; i < fill; i++) bars[i].classList.add(cls);
+
+      label.textContent = strength;
+      label.classList.add(cls);
+    }
+
+    // ── Set loading state ──────────────────────────────────────
+    function setLoading(btnId, loading) {
+      const btn = document.getElementById(btnId);
+      if (loading) {
+        btn.classList.add('loading');
+        btn.disabled = true;
+      } else {
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      }
+    }
+
+    // ── Handle Login ───────────────────────────────────────────
+    async function handleLogin(e) {
+      e.preventDefault();
+      hideMessage();
+      setLoading('login-btn', true);
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      // Simulate network delay for realism
+      await new Promise(r => setTimeout(r, 800));
+
+      try {
+        const user = await AuthDB.login(email, password);
+        AuthDB.setSession(user);
+        showMessage('Welcome back, ' + user.username + '! Redirecting...', 'success');
+
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1000);
+      } catch (err) {
+        showMessage(err.message, 'error');
+        setLoading('login-btn', false);
+      }
+    }
+
+    // ── Handle Register ────────────────────────────────────────
+    async function handleRegister(e) {
+      e.preventDefault();
+      hideMessage();
+
+      const username = document.getElementById('reg-username').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirm = document.getElementById('reg-confirm').value;
+
+      // Validate
+      if (password !== confirm) {
+        showMessage('Passwords do not match.', 'error');
+        return;
+      }
+
+      if (password.length < 6) {
+        showMessage('Password must be at least 6 characters.', 'error');
+        return;
+      }
+
+      setLoading('register-btn', true);
+
+      // Simulate network delay
+      await new Promise(r => setTimeout(r, 1000));
+
+      try {
+        await AuthDB.register(username, email, password);
+        showMessage('Account created successfully! Signing you in...', 'success');
+
+        // Auto-login after registration
+        const user = await AuthDB.login(email, password);
+        AuthDB.setSession(user);
+
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1200);
+      } catch (err) {
+        showMessage(err.message, 'error');
+        setLoading('register-btn', false);
+      }
+    }
+
+    // ── Floating particles ─────────────────────────────────────
+    function createParticles() {
+      const colors = ['#F5C800', '#FF6B35', '#FF3D77', '#00E5D4', '#7AE582'];
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.classList.add('particle');
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = Math.random() * 10 + 's';
+        p.style.background = colors[Math.floor(Math.random() * colors.length)];
+        p.style.width = p.style.height = (2 + Math.random() * 3) + 'px';
+        document.body.appendChild(p);
+      }
+    }
+
+    createParticles();
+  </script>
+</body>
+</html>
